@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		491F2FC12E7B95B20079B524 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 491F2FC02E7B95B20079B524 /* .gitignore */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		491F2F7D2E7AA7630079B524 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -31,7 +27,6 @@
 		491F2F662E7AA7620079B524 /* SwiftUserApiDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUserApiDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		491F2F7C2E7AA7630079B524 /* SwiftUserApiDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftUserApiDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		491F2F862E7AA7630079B524 /* SwiftUserApiDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftUserApiDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		491F2FC02E7B95B20079B524 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -97,7 +92,6 @@
 				491F2F7F2E7AA7630079B524 /* SwiftUserApiDemoTests */,
 				491F2F892E7AA7630079B524 /* SwiftUserApiDemoUITests */,
 				491F2F672E7AA7620079B524 /* Products */,
-				491F2FC02E7B95B20079B524 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -231,7 +225,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				491F2FC12E7B95B20079B524 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
