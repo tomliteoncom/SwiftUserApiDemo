@@ -7,12 +7,19 @@
 
 
 import UIKit
+import Combine
 
 final class UserDetailViewController: UIViewController {
-    private let user: User
+    private var user: User
+    private let userUpdates: AnyPublisher<User, Never>
+    private var cancellables = Set<AnyCancellable>()
+    
+    // 讓我們可以在需要時重畫內容
+    private let stack = UIStackView()
 
-    init(user: User) {
-        self.user = user
+    init(initialUser: User, userUpdates: AnyPublisher<User, Never>) {
+        self.user = initialUser
+        self.userUpdates = userUpdates
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -23,15 +30,41 @@ final class UserDetailViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = user.username
         setupUI()
+        render(with: user)
+        
+        // 訂閱使用者更新，停留期間即時更新畫面
+        userUpdates
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] latest in
+                guard let self = self else { return }
+                self.user = latest
+                self.title = latest.username
+                self.render(with: latest)
+            }
+            .store(in: &cancellables)
     }
 
     private func setupUI() {
-        let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = 8
         stack.alignment = .leading
         stack.translatesAutoresizingMaskIntoConstraints = false
 
+        view.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+    
+    private func render(with user: User) {
+        // 清空舊內容
+        for v in stack.arrangedSubviews {
+            stack.removeArrangedSubview(v)
+            v.removeFromSuperview()
+        }
+        
         let lines: [String] = [
             "Name: \(user.name)",
             "Username: \(user.username)",
@@ -53,12 +86,5 @@ final class UserDetailViewController: UIViewController {
             label.text = l
             stack.addArrangedSubview(label)
         }
-
-        view.addSubview(stack)
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
     }
 }

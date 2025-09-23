@@ -13,6 +13,11 @@ final class UserListViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let viewModel: UserListViewModel
     private var cancellables = Set<AnyCancellable>()
+    
+    // 右上角 Refresh 按鈕
+    private lazy var refreshButton: UIBarButtonItem = {
+        UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshTapped))
+    }()
 
     init(viewModel: UserListViewModel) {
         self.viewModel = viewModel
@@ -26,6 +31,7 @@ final class UserListViewController: UIViewController {
         title = "Users"
         view.backgroundColor = .systemBackground
         setupTableView()
+        setupNavigationBar()
         bindViewModel()
         viewModel.fetchUsers()
     }
@@ -44,6 +50,10 @@ final class UserListViewController: UIViewController {
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
+    
+    private func setupNavigationBar() {
+        navigationItem.rightBarButtonItem = refreshButton
+    }
 
     private func bindViewModel() {
         viewModel.$users
@@ -55,12 +65,14 @@ final class UserListViewController: UIViewController {
 
         viewModel.$isLoading
             .sink { [weak self] loading in
+                guard let self = self else { return }
                 if loading {
                     let indicator = UIActivityIndicatorView(style: .medium)
                     indicator.startAnimating()
-                    self?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
                 } else {
-                    self?.navigationItem.rightBarButtonItem = nil
+                    // 載入結束時恢復 Refresh 按鈕
+                    self.navigationItem.rightBarButtonItem = self.refreshButton
                 }
             }
             .store(in: &cancellables)
@@ -73,6 +85,10 @@ final class UserListViewController: UIViewController {
                 self?.present(alert, animated: true)
             }
             .store(in: &cancellables)
+    }
+    
+    @objc private func refreshTapped() {
+        viewModel.fetchUsers()
     }
 }
 
@@ -95,7 +111,17 @@ extension UserListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let user = viewModel.users[indexPath.row]
-        let detailVC = UserDetailViewController(user: user)
+        let selectedId = user.id
+        
+        // 建立「該使用者」的更新流，Detail 停留期間會持續收到最新值
+        let userUpdates = viewModel.$users
+            .compactMap { users in users.first(where: { $0.id == selectedId }) }
+            .eraseToAnyPublisher()
+        
+        let detailVC = UserDetailViewController(
+            initialUser: user,
+            userUpdates: userUpdates
+        )
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
