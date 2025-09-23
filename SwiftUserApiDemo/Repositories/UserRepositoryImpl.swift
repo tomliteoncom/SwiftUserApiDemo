@@ -11,8 +11,8 @@ import Combine
 
 final class UserRepositoryImpl: UserRepository {
     private let client: APIClientProtocol
-//    private let usersURL = URL(string: "https://jsonplaceholder.typicode.com/users")!
-    private let usersURL = URL(string: "http://127.0.0.1:5000/users")!
+    private let usersURL = URL(string: "https://jsonplaceholder.typicode.com/users")!
+//    private let usersURL = URL(string: "http://127.0.0.1:5000/users")!
 
     init(client: APIClientProtocol = APIClient()) {
         self.client = client
