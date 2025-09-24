@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Xcode build artifacts
+build/
+DerivedData/
+
+# Xcode user-specific data
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.xcscmblueprint
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# 如果用到下列套件管理工具，依團隊策略選擇是否忽略
+# CocoaPods（多數團隊選擇「不忽略 Pods/，直接提交」；自行決定）
+# Pods/
+# Carthage
+Carthage/Build/
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
